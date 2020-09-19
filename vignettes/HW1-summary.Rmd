@@ -1,0 +1,27 @@
+---
+title: "HW1-summary"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{HW1-summary}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(bis557)
+```
+
+## Funtions
+
+### Linear Model
+A function to fit the linear model. Take a formula, a data frame and a list of constasts for factor variables as input. The output is a list of estimated coefficients.
+
+### Gradient Descent
+A function to implement gradient descent for ordinary least squares. Take a formula, a data frame and a list of constasts for factor variables and some default values as input. The output is a list of estimated coefficients.
