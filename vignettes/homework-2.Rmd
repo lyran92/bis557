@@ -1,0 +1,25 @@
+---
+title: "homework-2"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{homework-2}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(bis557)
+```
+
+### Question 1
+We should solve the equation $\mathbf{X}^{\intercal}\mathbf{X} \boldsymbol{\beta} =\mathbf{X}^{\intercal}\mathbf{Y}$, and get explicit formula of 
+$$ \left[\begin{array}{cc} \widehat \beta_0\\ \widehat \beta_1 \end{array}\right]=\boldsymbol{\widehat\beta} = (\mathbf{X}^{\intercal}\mathbf{X})^{-1}\mathbf{X}^{\intercal}\mathbf{Y}$$
+
+
