@@ -9,12 +9,12 @@
 #' @return A list of estimated coefficients.
 #' @examples
 #' data(iris)
-#' model <- grdient_descent(Sepal.Length ~ ., data = iris)
+#' model <- gradient_descent(Sepal.Length ~ ., data = iris)
 #' model$coefficients
 #' @export
 
-grdient_descent <- function(formula, data_frame, contrasts = NULL, lambda=0.0001, epsilon=1e-20, iters=1e6){
-  
+gradient_descent <- function(formula, data_frame, contrasts = NULL, lambda=0.0001, epsilon=1e-20, iters=1e6){
+
   d_no_na <- model.frame(formula, data_frame)
   X <- model.matrix(formula,d_no_na, contrasts.arg = contrasts)
   y_name <- as.character(formula)[2]
@@ -38,5 +38,5 @@ grdient_descent <- function(formula, data_frame, contrasts = NULL, lambda=0.0001
     result  <- linear_model(formula, data_frame, contrasts)
     return(result)
   }
-  
+
 }

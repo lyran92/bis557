@@ -18,8 +18,91 @@ knitr::opts_chunk$set(
 library(bis557)
 ```
 
-### Question 1
-We should solve the equation $\mathbf{X}^{\intercal}\mathbf{X} \boldsymbol{\beta} =\mathbf{X}^{\intercal}\mathbf{Y}$, and get explicit formula of 
-$$ \left[\begin{array}{cc} \widehat \beta_0\\ \widehat \beta_1 \end{array}\right]=\boldsymbol{\widehat\beta} = (\mathbf{X}^{\intercal}\mathbf{X})^{-1}\mathbf{X}^{\intercal}\mathbf{Y}$$
+#1.CASL 2.11 Exercises problem number 5
+We should solve the equation $\mathbf{X}^{\intercal}\mathbf{X} \boldsymbol{\beta}  =\mathbf{X}^{\intercal}\mathbf{Y}$, and get explicit formula of 
+$$ \begin{pmatrix}
+\widehat \beta_0\\ \widehat \beta_1
+\end{pmatrix}=\boldsymbol{\widehat\beta} = (\mathbf{X}^{\intercal}\mathbf{X})^{-1}\mathbf{X}^{\intercal}\mathbf{Y}$$
+
+$$
+\mathbf{X}^{\intercal}\mathbf{X} = 
+\begin{pmatrix}
+1 & 1 & \dots 1 \\
+x_1 & x_2 & \dots x_n
+\end{pmatrix}
+\begin{pmatrix}
+1 & x_1\\ 1 & x_2  \\
+\\\vdots & \vdots \\1 & x_n
+\end{pmatrix}
+= \begin{pmatrix}
+\sum_{i=1}^n 1 & n \bar{x} \\
+n \bar{x} & 	\sum_{i=1}^n x_i^2
+\end{pmatrix}
+$$
+$$
+ (\mathbf{X}^{\intercal}\mathbf{X})^{-1} 
+= \frac{1}{n\sum_{i=1}^n x_i^2- n^2\bar{x}^2}
+\begin{pmatrix}
+\sum_{i=1}^n x_i^2 & -n \bar{x} \\
+-n \bar{x} & 	n
+\end{pmatrix}
+=\frac{1}{n\sum_{i=1}^n (x_i-\bar{x})^2}
+\begin{pmatrix}
+\sum_{i=1}^n x_i^2 & -n \bar{x} \\
+-n \bar{x} & 	n
+\end{pmatrix}
+$$
+$$
+\mathbf{X}^{\intercal}\mathbf{Y} 
+= \begin{pmatrix}
+1 & 1 & \dots 1 \\
+x_1 & x_2 & \dots x_n
+\end{pmatrix}\begin{pmatrix}
+y_1 \\ y_2 \\ \vdots \\y_n
+\end{pmatrix}
+= \begin{pmatrix}
+n \bar{y}\\
+\sum_{i=1}^n x_iy_i
+\end{pmatrix}
+$$
+
+$$ \begin{align}
+\boldsymbol{\widehat\beta}=\begin{pmatrix}
+\widehat \beta_0\\ \widehat \beta_1
+\end{pmatrix} 
+&= \frac{1}{n\sum_{i=1}^n (x_i-\bar{x})^2}
+\begin{pmatrix}
+\sum_{i=1}^n x_i^2 & -n \bar{x} \\
+-n \bar{x} & 	n
+\end{pmatrix}\begin{pmatrix}n \bar{y}\\\sum_{i=1}^n x_iy_i\end{pmatrix}\\
+&=
+\frac{1}{n\sum_{i=1}^n (x_i-\bar{x})^2}\begin{pmatrix}
+n \bar{y}\sum_{i=1}^n x_i^2-n \bar{x}\sum_{i=1}^n x_iy_i\\ -n \bar{x}n \bar{y}-n\sum_{i=1}^n x_iy_i
+\end{pmatrix}\\
+&=
+\frac{1}{\sum_{i=1}^n (x_i-\bar{x})^2}\begin{pmatrix}
+\bar{y}\sum_{i=1}^n x_i^2-\bar{y}\bar{x}^2+\bar{y}\bar{x}^2- \bar{x}\sum_{i=1}^n x_iy_i\\ \sum_{i=1}^n (x_iy_i-\bar{x}\bar{y})
+\end{pmatrix}\\
+&=\begin{pmatrix}
+\frac{\bar{y}(\sum_{i=1}^n x_i^2-\bar{x})^2-\bar{x}(\sum_{i=1}^n x_iy_i-\bar{x}\bar{y})}{\sum_{i=1}^n (x_i-\bar{x})^2}\\
+\frac{\sum_{i=1}^n x_iy_i-\bar{x}\bar{y}}{\sum_{i=1}^n (x_i-\bar{x})^2}
+\end{pmatrix}
+\end{align}$$
+In this case, we have 
+$$ \widehat \beta_1 = \frac{\sum_{i=1}^n x_iy_i-\bar{x}\bar{y}}{\sum_{i=1}^n (x_i-\bar{x})^2} $$
+And
+$$\widehat \beta_0 = \bar y - \widehat \beta_1 \bar x$$
+
+#2.The comparison between the two gradient descent functions
+```{r, warning=FALSE}
+data(iris)
+model_gradient_descent <- gradient_descent(Sepal.Length ~ Petal.Width, iris)
+model_gradient_descent_new <- gradient_descent_new(Sepal.Length ~ Petal.Width, iris)
+print(model_gradient_descent$coefficients)
+print(model_gradient_descent_new$coefficients)
+
+```
+
+
 
 
