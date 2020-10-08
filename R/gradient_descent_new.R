@@ -21,12 +21,12 @@ gradient_descent_new <- function(formula, data_frame, contrasts = NULL, lambda=0
   Y <- matrix(d_no_na[, y_name], ncol = 1)
 
   set.seed(9999)
-  train_ind <- sample(seq_len(nrow(X)), size = ceiling(0.7 * nrow(X)))
-
-  X_train <- X[train_ind, ]
-  X_test <- X[-train_ind, ]
-  Y_train <- Y[train_ind]
-  Y_test <- Y[-train_ind]
+  train.index <- sample(1:nrow(X), size = ceiling(0.7 * nrow(X)))
+  test.index <- setdiff(1:nrow(X), train.index)
+  X_train <- X[train.index, ]
+  X_test <- X[test.index, ]
+  Y_train <- Y[train.index,]
+  Y_test <- Y[test.index,]
 
     if (qr(X_train)$rank==dim(X_train)[2]) {
       n <- length(Y_train)
@@ -42,6 +42,6 @@ gradient_descent_new <- function(formula, data_frame, contrasts = NULL, lambda=0
       result <- list(coefficients = beta)
       return(result)
     }else{
-      warning("Gradient descent cannot be implemented in this case. Use linear_model function instead")
+      warning("Gradient descent cannot be implemented in this case.")
     }
 }

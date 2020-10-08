@@ -3,3 +3,5 @@
 export(gradient_descent)
 export(gradient_descent_new)
 export(linear_model)
+export(optimize_ridge)
+export(ridge_regression)
