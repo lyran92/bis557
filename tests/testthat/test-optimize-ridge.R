@@ -15,7 +15,7 @@ test_that("You optimize_ridge() function works well", {
   Y <- X %*% beta + rnorm(n)
   lambdas <- seq(0.1,10, by=0.1)
 
-  data <-cbind(y,X)
+  data <-cbind(Y,X)
   data <- as.data.frame(data)
   fit_lm <- lm.ridge(V1~.-1,data,lambda =lambdas)
   lambda_lm=lambdas[fit_lm$GCV==min(fit_lm$GCV)]
