@@ -19,6 +19,7 @@ library(bis557)
 ```
 
 #1.CASL 2.11 Exercises problem number 5
+
 We should solve the equation $\mathbf{X}^{\intercal}\mathbf{X} \boldsymbol{\beta}  =\mathbf{X}^{\intercal}\mathbf{Y}$, and get explicit formula of 
 $$ \begin{pmatrix}
 \widehat \beta_0\\ \widehat \beta_1
@@ -93,7 +94,7 @@ $$ \widehat \beta_1 = \frac{\sum_{i=1}^n x_iy_i-\bar{x}\bar{y}}{\sum_{i=1}^n (x_
 And
 $$\widehat \beta_0 = \bar y - \widehat \beta_1 \bar x$$
 
-#2.The comparison between the two gradient descent functions
+#2.The comparison between the two gradient descent functions.
 ```{r, warning=FALSE}
 data(iris)
 model_gradient_descent <- gradient_descent(Sepal.Length ~ Petal.Width, iris)
@@ -104,7 +105,6 @@ print(model_gradient_descent_new$coefficients)
 
 #3. A ridge regression function taking into account colinear (or nearly colinear) regression variables.
 ```{r, warning=FALSE}
-
 n <- 1000
 p <- 5
 beta <- c(1,-1,0,0,2)
@@ -114,14 +114,12 @@ alpha <- 0.05
 X[,1] <- X[,1] * alpha + X[,2] * (1 - alpha)
 set.seed(1)
 Y <- X %*% beta + rnorm(n)
-fit_ridge_regression = ridge_regression(X,Y,1.2)
-print(fit_ridge_regression$coefficients)
-
+model_ridge_regression = ridge_regression(X,Y,1.2)
+print(model_ridge_regression$coefficients)
 ```
 
 #4. A function optimizing the ridge penalty parameter.
 ```{r, warning=FALSE}
-
 n <- 500
 p <- 5
 beta <- c(1,-1,0,0,2)
@@ -133,7 +131,6 @@ Y <- X %*% beta + rnorm(n)
 lambdas <- seq(0.1,10, by=0.1)
 lambda_ridge = optimize_ridge(X,Y,lambdas,k=5)
 print(lambda_ridge)
-
 ```
 
 #5. Consider the LASSO penalty
@@ -156,21 +153,21 @@ $$
 
 Let $f(\beta_j)=\beta_j^2-2\beta_jX_j^{\intercal}Y+2n\lambda |\beta_j|$
 
-When $\beta_j = 0$, $$f(\beta_j) = 0= \underset{\beta}{\operatorname{argmin}} f(\beta)=\hat\beta^{\text {lasso}}$$\
+When $\beta_j = 0$, $f(\beta_j) = 0$,then$\hat\beta^{\text {lasso}}=\underset{\beta}{\operatorname{argmin}} f(\beta)=0$\
 
 When $\beta_j > 0$, then
 $$
 \frac{d f(\beta_j)}{d \beta_j}=2\beta_j-2X_j^TY+2n\lambda=0
 $$
-We have $\hat\beta^{\text {lasso}}=X_j^TY - n\lambda \geq0 $. If $|X_j^TY| \leq n \lambda$. Then the equation must hold. So $|X_j^TY| = n \lambda$. Then $\hat\beta^{\text {lasso}}=0 $
+We have $$\hat\beta^{\text {lasso}}= X_j^{\intercal}Y - n\lambda > 0 $$ If $|X_j^{\intercal}Y| \leq n \lambda$. Then the equation must hold. So $|X_j^{\intercal}Y| = n \lambda$. Then $$\hat\beta^{\text {lasso}}=0 $$
 
 When $\beta_j < 0$, then
 $$
 \frac{d f(\beta_j)}{d \beta_j}=2\beta_j-2X_j^TY-2n\lambda=0
 $$
-We have $\hat\beta^{\text {lasso}}=X_j^TY + n\lambda \geq0 $. If $|X_j^TY| \leq n \lambda$. Then the equation must hold. So $|X_j^TY| = n \lambda$. Then $\hat\beta^{\text {lasso}}=0 $
+We have $$\hat\beta^{\text {lasso}}= X_j^{\intercal}Y + n\lambda < 0 $$ If $|X_j^{\intercal}Y| \leq n \lambda$. Then the equation must hold. So $|X_j^{\intercal}Y| = n \lambda$. Then $$\hat\beta^{\text {lasso}}=0 $$
 
-In conclusion, if $|X_j^TY| \leq n \lambda$, then $\widehat \beta^{\text{LASSO}}$ must be zero.
+In conclusion, if $|X_j^{\intercal}Y| \leq n \lambda$, then $\widehat \beta^{\text{LASSO}}$ must be zero.
 
 
 

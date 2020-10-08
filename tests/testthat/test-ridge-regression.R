@@ -1,5 +1,4 @@
 library(testthat)
-library(MASS)
 
 context("Test the ridge_regression function.")
 

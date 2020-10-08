@@ -5,6 +5,15 @@
 #' @param lambdas The list of input penalty parameters.
 #' @param k An optional number k for k-fold cross-validation.
 #' @examples
+#'   n <- 500
+#'   p <- 5
+#'   beta <- c(1,-1,0,0,2)
+#'   set.seed(9999)
+#'   X <- matrix(rnorm(n * p), ncol = p)
+#'   alpha <- 0.05
+#'   X[,1] <- X[,1] * alpha + X[,2] * (1 - alpha)
+#'   Y <- X %*% beta + rnorm(n)
+#'   lambdas <- seq(0.1,10, by=0.1)
 #' result <- optimize_ridge(X, Y, lambda=seq(0.1,15,length.out=50),k=5)
 #' print(result)
 #' @export
