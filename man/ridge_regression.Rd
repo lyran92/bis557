@@ -13,6 +13,9 @@ ridge_regression(X, Y, lambda)
 
 \item{lambda}{The input penalty parameter.}
 }
+\value{
+A list of estimated coefficients.
+}
 \description{
 This is a function to implement a ridge regression function taking into account colinear (or nearly colinear) regression variables.
 }

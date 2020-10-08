@@ -3,6 +3,7 @@
 #' @param X The input design matrix.
 #' @param Y The input response vector.
 #' @param lambda The input penalty parameter.
+#' @return A list of estimated coefficients.
 #' @examples
 #' n <- 1000
 #' p <- 5

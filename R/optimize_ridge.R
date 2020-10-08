@@ -1,9 +1,10 @@
-#' @title Optimizing the ridge parameter
+#' @title Optimizing the ridge parameter.
 #' @description This is a function to optimize the ridge penalty parameter.
 #' @param X The input design matrix.
 #' @param Y The input response vector.
 #' @param lambdas The list of input penalty parameters.
 #' @param k An optional number k for k-fold cross-validation.
+#' @return The most optimal ridge parameter.
 #' @examples
 #'   n <- 500
 #'   p <- 5

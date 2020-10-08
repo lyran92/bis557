@@ -2,7 +2,7 @@
 % Please edit documentation in R/optimize_ridge.R
 \name{optimize_ridge}
 \alias{optimize_ridge}
-\title{Optimizing the ridge parameter}
+\title{Optimizing the ridge parameter.}
 \usage{
 optimize_ridge(X, Y, lambdas, k)
 }
@@ -14,6 +14,9 @@ optimize_ridge(X, Y, lambdas, k)
 \item{lambdas}{The list of input penalty parameters.}
 
 \item{k}{An optional number k for k-fold cross-validation.}
+}
+\value{
+The most optimal ridge parameter.
 }
 \description{
 This is a function to optimize the ridge penalty parameter.
