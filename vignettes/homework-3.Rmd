@@ -1,0 +1,74 @@
+---
+title: "homework-3"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{homework-3}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(bis557)
+```
+
+#1.CASL 5.8 Exercises problem number 2
+
+The Hessian matrix can be written as $H(l) = X^{T}DX$, where $D$ is a diagonal matrix with elements $$D_{i,i}=p_{i} (1-p_{i})$$
+The textbook shows that in order to make the logistic Hessian ill-conditioned, the probablity $p$ should close to 0 or 1.
+
+```{r}
+set.seed(100)
+n <- 100; m <- 25
+X <- cbind(1, matrix(rnorm(n * (m-1)), ncol = m-1))
+H_linear <- t(X) %*% X
+svals <- svd(H_linear)$d
+max(svals) / min(svals) #the condition number can be computed from values
+
+beta <- rep(10, m)
+p <- 1 / (1 + exp(-X %*% beta)) #p is either close to 0 or close to 1
+D <- diag(as.vector(p) * (1 - as.vector(p)))
+H_logistic <- t(X) %*% D %*% X
+svals1 <- svd(H_logistic)$d
+max(svals1) / min(svals1)
+```
+The condition number of the linear Hessian is small, so it is well-conditioned.
+The condition number of the logistic Hessian is large, so it is ill-conditioned.
+
+#2
+```{r}
+set.seed(999)
+n <- 1000; p <- 5;
+X <- cbind(1, matrix(rnorm(n * (p-1)), ncol = p-1))
+beta <- c(-1, 0.3, 2, 0.1, 0.5)
+Y <- rpois(n, exp(X %*% beta))
+data <- as.data.frame(cbind(Y, X))
+fit_glm <- glm(Y ~ . -1, data, family = poisson(link = "log"))
+fit_cos <-glm_gradient(X,Y,family=poisson(link = "log"),step = "constant")
+fit_mom <-glm_gradient(X,Y,family=poisson(link = "log"),step = "momentum")
+fit_glm$coefficients
+fit_cos
+fit_mom 
+```
+
+Compared to the perfomance with momentum method, the performance with a constant step size is better since the estimated coefficients are more similar to the glm method.
+
+#3
+```{r}
+data(iris)
+iris1 <- iris[sample(150,replace = F),]
+iris.X <- as.matrix(iris1[,-5])
+iris.y <- iris1$Species
+classification <- class_logistic(iris.X, iris.y, maxiter=50)
+length(iris.y[(iris.y != classification$prediction)==TRUE])/length(iris.y)
+```
+
+The misclassification rate is 0.04. Our classification is accuracy.
+
+
