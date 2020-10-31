@@ -19,7 +19,7 @@
 #'glm_gradient(X,Y,family=poisson(link = "log"),step = "momentum")
 #' @export
 
-glm_gradient <-function(X, y,family,step = c("constant", "momentum"),lambda = 1e-5,gamma =0.4,maxiter = 1e3,tol = 1e-12){
+glm_gradient <-function(X, y,family,step = c("constant", "momentum"),lambda = 1e-5,gamma =0.8,maxiter = 1e3,tol = 1e-12){
 
   beta <- rep(0, ncol(X)) #Initialize the parameters
   for(i in seq_len(maxiter)){
@@ -32,9 +32,10 @@ glm_gradient <-function(X, y,family,step = c("constant", "momentum"),lambda = 1e
       beta <- beta + lambda * grad
     }
     if(step == "momentum"){
-      grad_new <- gamma*beta+(1-gamma)* grad #Update the gradient and beta on the current mini-batch
+      grad_new <- gamma*beta+(1-gamma)* grad #Update the gradient of beat and the current beta itself by weighted averaging them.
       beta <- beta+lambda*grad_new
     }
+    #I refer the concept from the coursera course "Gradient descent with momentum" by Andrew Ng.
 
     if(sqrt(crossprod(beta - beta_old)) < tol) break
   }

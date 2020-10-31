@@ -21,7 +21,7 @@ library(bis557)
 #1.CASL 5.8 Exercises problem number 2
 
 The Hessian matrix can be written as $H(l) = X^{T}DX$, where $D$ is a diagonal matrix with elements $$D_{i,i}=p_{i} (1-p_{i})$$
-The textbook shows that in order to make the logistic Hessian ill-conditioned, the probablity $p$ should close to 0 or 1.
+The textbook CASL shows that in order to make the logistic Hessian ill-conditioned, the probablity $p$ should close to 0 or 1.
 
 ```{r}
 set.seed(100)
@@ -42,6 +42,8 @@ The condition number of the linear Hessian is small, so it is well-conditioned.
 The condition number of the logistic Hessian is large, so it is ill-conditioned.
 
 #2
+I create a function that provides first-order solution for the GLM maximum likelihood problem using gradient information,and I can choose to use either a constant step size or a momentum method to optimaize the parameter.
+
 ```{r}
 set.seed(999)
 n <- 1000; p <- 5;
@@ -57,9 +59,11 @@ fit_cos
 fit_mom 
 ```
 
-Compared to the perfomance with momentum method, the performance with a constant step size is better since the estimated coefficients are more similar to the glm method.
+Compared to the perfomance with momentum method, the performance with a constant step size is better since the estimated coefficients are more similar to the glm method and the true beta.
 
-#3
+#3  
+I create a classification model generalizing logistic regression to accommodate more than two classes. I use a second-order solution (Hessian matrix) to optimaize the parameter. Then I use softmax function to get the probablity of each observation belongs to three classes and assign the obersvation to the class with the highest probability among its three probabilities.
+
 ```{r}
 data(iris)
 iris1 <- iris[sample(150,replace = F),]
@@ -69,6 +73,6 @@ classification <- class_logistic(iris.X, iris.y, maxiter=50)
 length(iris.y[(iris.y != classification$prediction)==TRUE])/length(iris.y)
 ```
 
-The misclassification rate is 0.04. Our classification is accuracy.
+The misclassification rate is 0.04. Our classification is somehow accuracy.
 
 

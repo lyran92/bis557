@@ -10,7 +10,7 @@ glm_gradient(
   family,
   step = c("constant", "momentum"),
   lambda = 1e-05,
-  gamma = 0.4,
+  gamma = 0.8,
   maxiter = 1000,
   tol = 1e-12
 )
