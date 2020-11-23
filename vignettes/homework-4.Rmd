@@ -1,0 +1,221 @@
+---
+title: "homework-4"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{homework-4}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(bis557)
+library(reticulate)
+use_condaenv("r-reticulate")
+```
+
+1. Implement a numerically-stable ridge regression in python
+```{python}
+#This is a function to implement a ridge regression function 
+#taking into account colinear (or nearly colinear) regression variables.
+#Args:
+#X: The input design matrix.
+#y: The input response vector.
+#lambda_param: The input penalty parameter.
+#maxiter: A number indicating the maximum number iterations.
+#eta: The Learning rate.
+#Returns:
+#A list of estimated coefficients.  
+def pyridge(X, y,lambda_param, maxiter=10000, eta=0.01):
+
+
+        #Get the sample size
+        num_examples = X.shape[0] 
+        
+        #Initialize the parameter
+        beta = np.zeros(X.shape[1])
+        intercept = 0
+
+        for i in range(maxiter):
+            yhat = intercept + np.dot(X,beta)  
+            diff=y-yhat
+            #Calculate the gradient of the parameter
+            dbeta = 2*(-np.dot(X.T,diff) + lambda_param*beta)/num_examples
+            dintercept = -2*np.sum(diff)/num_examples
+            #Update the parameter
+            beta = beta - eta*dbeta     
+            intercept = intercept - eta*dintercept
+        coef = {'beta':beta, 'intercept':intercept}
+        return coef
+        
+        
+import numpy as np
+n = 1000
+p = 5
+np.random.seed(999)
+X = np.random.randn(n,p)
+alpha = 0.05
+X[:,0] = X[:,0]*alpha + X[:,1]*(1-alpha) #Simulate colinear regression variables
+beta = np.array([1,1,2,-1,-2])  
+intercept=1
+y = np.dot(X,beta) + np.random.randn(n)+intercept
+coef = pyridge(X,y,lambda_param=0.5)
+print(coef['beta'])
+print(coef['intercept'])
+```
+
+```{r}
+n <- 1000
+p <- 5
+beta <- c(1,1,2,-1,-2)
+set.seed(999)
+X <- matrix(rnorm(n*p), nrow=n, ncol = p)
+alpha <- 0.05
+X[,1] <- X[,1] * alpha + X[,2] * (1 - alpha) #Simulate colinear regression variables
+intercept=1
+y <- X %*% beta + rnorm(n)+intercept
+model_ridge_regression = ridge_regression(X,y,0.5)
+print(model_ridge_regression$coefficients)
+```
+Comparing the output of Python to the output of R. Both of the two functions fit well. But the function in Python fits better under this simulated data set.
+
+
+2.Create an "out-of-core" implementation of the linear model that reads in contiguous rows of a data frame from a file, updates the model.
+```{r}
+if (!require(reticulate)) {
+  install.packages("iterators")
+}
+library(iterators)
+use_condaenv("r-reticulate")
+np <- import("numpy", as = "np", convert = FALSE)
+data(iris)
+#Use iterators to read contiguous rows one by one each time to update the data set
+irisrow <- iter(iris[-5], by = "row")
+X <- NULL
+y <- NULL
+pycoefficient <- NULL
+for (i in 1:10){
+  newrow <- nextElem(irisrow)
+  X <-rbind(X, newrow[-1])
+  y <-rbind(y, newrow[1])
+}
+Xnew <- X
+ynew <- y
+#the input matrix must have more than 10 rows, otherwise qr() cannot be solved.
+
+for (i in 1:50){
+  newrow <- nextElem(irisrow)
+  Xnew <-rbind(Xnew,newrow[-1])
+  ynew  <-c(ynew,newrow[1])
+  Xnew <- as.matrix(Xnew)
+  ynew <- unlist(ynew)
+  pycoefficient <- rbind(pycoefficient,unlist(pylinear(Xnew,ynew)))
+}
+
+print(pycoefficient)
+print(lm(Sepal.Length ~ 0+., iris[1:60, -5])$coefficients) 
+#Comparing with the 50th element in pycoefficient
+print(lm(Sepal.Length ~ 0+., iris[1:50, -5])$coefficients) 
+#Comparing with the 40th element in pycoefficient
+
+```
+Comparing the output of Python to the output of lm() in R. The coefficients of the same dataset are the same.
+
+
+3. Implement your own LASSO regression function in Python
+```{python}
+ 
+#This is a LASSO regression function.
+#Args:
+#X: The input design matrix.
+#y: The input response vector.
+#lambda_param: The input penalty parameter.
+#maxiter: A number indicating the maximum number iterations.
+#eta: The Learning rate.
+#Returns:
+#A list of estimated coefficients.
+
+def pylasso(X, y, lambda_param,  maxiter=10000, eta=0.001):
+        #Get the sample size
+        num_examples = X.shape[0] 
+        #Get the number of features
+        p = X.shape[1]
+        #Initialize the parameters 
+        beta = np.zeros(p)
+        intercept = 0
+
+        for i in range(maxiter):
+            yhat = intercept + np.dot(X, beta)
+            diff=y-yhat
+            #Calculate the gradient of the parameter
+            dbeta = np.zeros(p)
+            for k in range(p):
+                #Set threshold under different situations of beta
+                if beta[k] > 0:
+                    dbeta[k] = (-2*np.dot(X[:,k],diff) + lambda_param) /num_examples
+                else:
+                    dbeta[k] = (-2*np.dot(X[:,k],diff) - lambda_param) /num_examples
+            dintercept = -2*np.sum(diff)/num_examples
+            #Update the parameters
+            beta = beta - eta*dbeta
+            intercept = intercept - eta*dintercept
+
+        coef = {'beta':beta, 'intercept':intercept}
+        return coef
+    
+        
+import numpy as np
+n = 1000
+p = 7
+np.random.seed(999)
+X = np.random.randn(n,p)
+beta = np.array([0,2,0,0,1,0,0])
+intercept=1
+y = np.dot(X,beta) + np.random.randn(n)+intercept
+coef = pyridge(X,y,lambda_param=0.5)
+print(coef['beta'])
+print(coef['intercept'])
+
+```
+
+
+
+```{r}
+
+n <- 1000
+p <- 7
+beta <- c(0,2,0,0,1,0,0)
+set.seed(999)
+X <- matrix(rnorm(n*p), nrow=n, ncol = p)
+intercept=1
+y <- X %*% beta + rnorm(n) +intercept
+casl_lenet(X,y,lambda=0.5,maxit=80L)
+
+```
+Comparing the output of Python to the output of R. Both of the two functions fit okay. Under this simulated data set, we may not conclude which is better. Because the function in Python has higher estimated values, so the estimated parameters for non-zero parameters are closer to the true parameters. For the casl function, it estimated exactly zero.
+
+
+
+4. Propose a final project for the class.
+
+I want to build a deep learner for classifying animals in a zoo animal dataset.
+
+Firstly, I consider using PCA for dimension reduction. 
+
+Then I want to implement a generalizing logistic regression model to accommodate more than two classes. 
+
+I plan to use different solutions to optimize the parameter. For example, a first-order solution, Hessian matrix, and so on.
+
+In homework3, I used the softmax function to get the probability of each observation belongs to each class. I'd like to find is there any other method to calculate the probability.
+
+Also, I will try to add a penalty into the model to see whether it can improve the performance of the model.
+
+The accuracy/misclassification rate will be the benchmark to evaluate my work.
+
+
